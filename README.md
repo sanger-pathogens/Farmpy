@@ -28,7 +28,7 @@ To submit a job called "name" that asks for 1GB of memory, runs the script foo.s
 
 To submit a job that will only run when job with ID 42 has finished, use:
 
-    bsub.py --depend 42 1 name foo.sh
+    bsub.py --done 42 1 name foo.sh
 
 If you want 10GB of /tmp space on the node:
 
@@ -73,6 +73,7 @@ You can run a job array using start= and end= when constructing a Job. Example:
   job = ('out', 'err', 'name', 'normal', 1, 'run.sh INDEX', start=1, end=10)
 
 This sets up a job array with 10 elements. stdout files will be called out.1, out.2, ....etc and similarly for stderr. Every appearance of 'INDEX' in the command is translated to be the job index (technically, the $LSB_JOBINDEX environment variable). So this would submit 10 jobs to LSF:
+
     run.sh 1
     run.sh 2
     ...
