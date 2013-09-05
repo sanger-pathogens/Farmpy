@@ -11,7 +11,7 @@ setup(
     long_description=read('README'),
     author='Martin Hunt',
     author_email='mh12@sanger.ac.uk',
-    url='FIXME',
+    url='https://github.com/martinghunt/farmpy',
     packages=find_packages(),
     scripts=[os.path.join('scripts', 'bsub.py')],
     test_suite='nose.collector',
