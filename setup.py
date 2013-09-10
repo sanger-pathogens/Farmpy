@@ -8,7 +8,7 @@ setup(
     name='farmpy',
     version='0.1',
     description='Package to run farm jobs - currently LSF supported',
-    long_description=read('README'),
+    long_description=read('README.md'),
     author='Martin Hunt',
     author_email='mh12@sanger.ac.uk',
     url='https://github.com/martinghunt/farmpy',
