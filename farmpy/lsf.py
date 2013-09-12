@@ -103,6 +103,21 @@ class Job:
         self._set_job_id_from_bsub_output(bsub_out)
 
 
+    def run_not_bsubbed(self):
+        '''Runs the job directly on the node. Does not bsub it. Stdout and stderr will be output as if the command was run directly in a terminal'''
+        def run_command(cmd):
+            retcode = subprocess.call(cmd, shell=True)
+            if retcode != 0:
+                raise Error('Error running command:\n' + str(self))
+            
+        if self.array_start > 0:
+            for i in range(self.array_start, self.array_end + 1):
+                os.environ['LSB_JOBINDEX'] = str(i)
+                run_command(self._make_command_string().replace('\$LSB_JOBINDEX', '$LSB_JOBINDEX'))
+        else:
+            run_command(self._make_command_string())
+        
+
     def add_dependency(self, deps, ended=False):
         '''Makes the job depend on another job or jobs.
 
