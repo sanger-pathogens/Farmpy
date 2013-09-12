@@ -2,6 +2,7 @@
 
 import sys
 import unittest
+import filecmp
 from farmpy import lsf
 import os
 
@@ -177,6 +178,25 @@ class TestJob(unittest.TestCase):
         bsub.run()
         self.assertEqual('42', bsub.job_id)
 
+    def test_run_not_bsubbed(self):
+        '''Test running not bsubbed on normal command'''
+        tmp_out = 'tmp.test_run_not_bsubbed'
+        bsub = lsf.Job('tmp.out', 'tmp.err', 'test', 'normal', 1, 'echo "test_run_not_bsubbed" > ' + tmp_out)
+        bsub.run_not_bsubbed()
+        self.assertTrue(filecmp.cmp(tmp_out, os.path.join(test_dir, 'lsf_unittest_run_not_bsubbed.out')))
+        os.unlink(tmp_out)
+
+        bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'not_a_command_and_should_fail')
+        with self.assertRaises(lsf.Error):
+            bsub.run_not_bsubbed()
+
+    def test_run_not_bsubbed_array(self):
+        '''Test running not bsubbed on job array'''
+        tmp_out = 'tmp.test_run_not_bsubbed_array'
+        bsub = lsf.Job('tmp.out', 'tmp.err', 'test', 'normal', 1, 'echo "test_run_not_bsubbed array INDEX" >> ' + tmp_out, array_start=1, array_end=3)
+        bsub.run_not_bsubbed()
+        self.assertTrue(filecmp.cmp(tmp_out, os.path.join(test_dir, 'lsf_unittest_run_not_bsubbed_array.out')))
+        os.unlink(tmp_out)
 
 if __name__ == '__main__':
     unittest.main()
