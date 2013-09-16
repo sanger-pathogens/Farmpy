@@ -6,15 +6,15 @@ from farmpy import lsf
 
 parser = argparse.ArgumentParser(
     description = 'Wrapper script for running jobs using LSF',
-    usage = '%(prog)s <memory in GB> <job_name> <command>',
+    usage = '%(prog)s <memory> <name> <command>',
     epilog = 'Note: to run a job array, use --start and --end. Every appearance of INDEX in the command to be run will be replaced with \\$LSB_JOBINDEX. e.g. try bsub.py --norun --start 1 --end 10 1 name foo.sh INDEX')
 
 parser.add_argument('memory', type=float,  help='Memory in GB to reserve for the job')
 parser.add_argument('name', help='Name of the job')
 parser.add_argument('command', help='Command to be bsubbed', nargs=argparse.REMAINDER)
 
-parser.add_argument('-e', '--err', help='Name fo file that stderr gets written to [job_name.e]', metavar='filename', default=None)
-parser.add_argument('-o', '--out', help='Name fo file that stdout gets written to [job_name.o]', metavar='filename', default=None)
+parser.add_argument('-e', '--err', help='Name of file that stderr gets written to [job_name.e]', metavar='filename', default=None)
+parser.add_argument('-o', '--out', help='Name of file that stdout gets written to [job_name.o]', metavar='filename', default=None)
 parser.add_argument('--start', type=int, help='Starting index of job array', metavar='int', default=0)
 parser.add_argument('--end', type=int, help='Ending index of job array', metavar='int', default=0)
 parser.add_argument('--done', action='append', help='Only start the job running when the given job finishes successfully. All digits is interpreted as a job ID, otherwise a job name. This can be used more than once to make the job depend on two or more other jobs', metavar='Job ID/job name')
