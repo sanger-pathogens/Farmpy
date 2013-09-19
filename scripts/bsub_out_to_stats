@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+
+import argparse
+from farmpy import tasks
+
+parser = argparse.ArgumentParser(
+    description = 'Reports stats such as memory/cpu usage etc from the output of an LSF bsub job',
+    usage = '%(prog)s <list of bsub output files>')
+
+parser.add_argument('--outfile', '-o', help='Name of output file. Default is stdout', default='-')
+parser.add_argument('-l', '--longer', action='count', help='Print longer output with more columns. This can be given twice for even more output', default=0)
+parser.add_argument('infiles', nargs='+', help='list of bsub output files')
+options = parser.parse_args()
+
+if options.longer == 0:
+    compress_job_name = 10
+    compress_filename = 40
+    show_all = False
+elif options.longer == 1:
+    compress_job_name = 10
+    compress_filename = None
+    show_all = True
+elif options.longer >= 2:
+    compress_job_name = None
+    compress_filename = None
+    show_all = True
+
+tasks.lsf_out_to_tsv(
+    options.infiles,
+    options.outfile,
+    show_all=show_all,
+    compress_job_name=compress_job_name,
+    compress_filename=compress_filename
+)

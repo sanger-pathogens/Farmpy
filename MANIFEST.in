@@ -1,1 +1,1 @@
-recursive-include farmpy/tests *.txt *.sh *.py
+recursive-include farmpy/tests *.txt *.sh *.py *_unittest_*

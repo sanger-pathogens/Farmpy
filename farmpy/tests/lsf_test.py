@@ -198,5 +198,6 @@ class TestJob(unittest.TestCase):
         self.assertTrue(filecmp.cmp(tmp_out, os.path.join(test_dir, 'lsf_unittest_run_not_bsubbed_array.out')))
         os.unlink(tmp_out)
 
+
 if __name__ == '__main__':
     unittest.main()
