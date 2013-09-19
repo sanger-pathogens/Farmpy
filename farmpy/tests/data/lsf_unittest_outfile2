@@ -1,0 +1,41 @@
+Some output from the job
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@exec_host>
+Subject: Job 1936694: <job> in cluster <farm3> Done
+
+Job <job> was submitted from host <farm3-head3> by user <username> in cluster <farm3>.
+Job was executed on host(s) <exec_host>, in queue <normal>, as user <username> in cluster <farm3>.
+</home/directory> was used as the home directory.
+</the/working/dir> was used as the working directory.
+Started at Sun Sep 16 12:13:29 2013
+Results reported at Mon Sep 16 13:11:06 2013
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+foo.sh 42 bar
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :               10864.48 sec.
+    Max Memory :             1184 MB
+    Average Memory :         201.91 MB
+    Total Requested Memory : 2000.00 MB
+    Delta Memory :           816.00 MB
+    (Delta: the difference between total requested memory and actual max usage.)
+    Max Processes :          6
+    Max Threads :            7
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <name_of_job.e> for stderr output of this job.
+

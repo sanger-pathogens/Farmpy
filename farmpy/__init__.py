@@ -1,1 +1,2 @@
-from farmpy import lsf
+__all__ = ['lsf', 'lsf_stats']
+from farmpy import *

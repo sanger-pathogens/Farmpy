@@ -22,6 +22,8 @@ Install:
 Synposis - command line
 -----------------------
 
+### Submitting jobs ###
+
 To submit a job called "name" that asks for 1GB of memory, runs the script foo.sh and writes stdout and stderr to name.o and name.e:
 
     bsub.py 1 name foo.sh
@@ -37,6 +39,23 @@ If you want 10GB of /tmp space on the node:
 There are many more options. Use -h or --help to see the full list of options
 
     bsub.py --help
+
+### Getting stats from finished jobs ###
+
+To get a tsv file of CPU, memory usage etc of a job:
+
+    bsub_out_to_stats bsub.output
+
+This works with muliple files. e.g.:
+
+    bsub_out_to_stats bsub.output1 bsub.output2
+
+or
+
+    bsub_out_to_stats *.output
+
+Each file can contain the output of more than one job.
+
 
 Synposis - running within a script
 ----------------------------------

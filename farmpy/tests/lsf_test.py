@@ -63,6 +63,11 @@ class TestJob(unittest.TestCase):
         resources = bsub._make_resources_string()
         self.assertEqual('-R "select[mem>1000 && tmp>42000] rusage[mem=1000,tmp=42000]" -M1000', resources)
 
+    def test_make_queue_string(self):
+        '''Check that queue set correctly'''
+        bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')
+        self.assertEqual('-q queue', bsub._make_queue_string())
+
     def test_make_output_files_string(self):
         '''Check that the names of the stdout and stderr files set properly'''
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')
@@ -197,6 +202,7 @@ class TestJob(unittest.TestCase):
         bsub.run_not_bsubbed()
         self.assertTrue(filecmp.cmp(tmp_out, os.path.join(test_dir, 'lsf_unittest_run_not_bsubbed_array.out')))
         os.unlink(tmp_out)
+
 
 if __name__ == '__main__':
     unittest.main()

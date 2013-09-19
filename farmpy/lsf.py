@@ -149,6 +149,10 @@ class Job:
         return "-E 'test -e " + os.path.expanduser('~') + "'"
 
 
+    def _make_queue_string(self):
+        return '-q ' + self.queue
+
+
     def _set_memory_units(self):
         if self.memory_units is not None:
             return self.memory_units
@@ -235,6 +239,7 @@ class Job:
     def __str__(self):
         return ' '.join([x for x in [
                             'bsub',
+                            self._make_queue_string(),
                             self._make_prexec_test_string(),
                             self._make_resources_string(),
                             self._make_output_files_string(),
