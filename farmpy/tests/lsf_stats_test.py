@@ -11,7 +11,7 @@ data_dir = os.path.join(lsf_stats_dir, 'tests', 'data')
 
 class TestLsfStats(unittest.TestCase):
     def test_to_tsv(self):
-        '''Test cnvert to tsv'''
+        '''Test convert to tsv'''
         reader = lsf_stats.file_reader(os.path.join(data_dir, 'lsf_unittest_outfile'))
         stats = next(reader)
         expected = [
@@ -51,6 +51,18 @@ class TestLsfStats(unittest.TestCase):
         ]
         
         self.assertEqual('\t'.join([str(x) for x in expected]), stats.to_tsv(show_all=False))
+
+        expected = [
+            stats.exit_code,
+            round(stats.cpu_time / (60*60), 2),
+            round(stats.wall_clock_time / (60*60), 2),
+            stats.max_memory,
+            stats.requested_memory,
+        ]
+        
+        self.assertEqual('\t'.join([str(x) for x in expected]), stats.to_tsv(show_all=False, time_in_hours=True))
+        
+
 
     def test_tsv_header(self):
         '''Test tsv header string'''
@@ -225,7 +237,7 @@ class TestFileReader(unittest.TestCase):
         expected_stats[0].working_dir = '/the/working/dir'
         expected_stats[0].start_time = datetime.combine(date(2013, 9, 16), time(12, 13, 29))
         expected_stats[0].end_time = datetime.combine(date(2013, 9, 16), time(13, 11, 6))
-        expected_stats[0].wall_clock_time = 0.96
+        expected_stats[0].wall_clock_time = 3457
         expected_stats[0].cpu_time = 10864.48
         expected_stats[0].max_memory = 1.184
         expected_stats[0].requested_memory = 2
@@ -239,7 +251,7 @@ class TestFileReader(unittest.TestCase):
         expected_stats[1].working_dir = '/the/working/dir'
         expected_stats[1].start_time = datetime.combine(date(2013, 9, 16), time(13, 13, 29))
         expected_stats[1].end_time = datetime.combine(date(2013, 9, 16), time(15, 11, 6))
-        expected_stats[1].wall_clock_time = 1.96
+        expected_stats[1].wall_clock_time = 7057
         expected_stats[1].cpu_time = 10464.48
         expected_stats[1].max_memory = 1.174
         expected_stats[1].requested_memory = 2
