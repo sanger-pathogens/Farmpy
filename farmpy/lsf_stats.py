@@ -77,8 +77,14 @@ class Stats:
         return type(other) is type(self) and self.__dict__ == other.__dict__
 
 
-    def to_tsv(self, job_name_limit=None, show_all=True):
+    def to_tsv(self, job_name_limit=None, show_all=True, time_in_hours=False):
         l = []
+        if time_in_hours:
+            original_cpu = self.cpu_time
+            original_wall_clock = self.wall_clock_time
+            self.cpu_time = None if (self.cpu_time is None) else round(self.cpu_time / (60*60), 2)
+            self.wall_clock_time = None if (self.wall_clock_time is None) else round(self.wall_clock_time / (60*60), 2)
+            
 
         if show_all:
             for x in all_stats:
@@ -95,6 +101,10 @@ class Stats:
                 l[i] = '*'
             else:
                 l[i] = str(l[i])
+
+        if time_in_hours:
+            self.cpu_time = original_cpu
+            self.wall_clock_time = original_wall_clock
 
         return '\t'.join(l)
 
@@ -219,7 +229,7 @@ class Stats:
     def _parse_end_time_line(self, line):
         self.end_time = self._time_line_to_datetime(line)
         if self.start_time is not None and self.end_time is not None:
-            self.wall_clock_time = round(float( (self.end_time - self.start_time).total_seconds() ) / (60.0 * 60.0), 2)
+            self.wall_clock_time = int ((self.end_time - self.start_time).total_seconds())
 
 
     def get_next_from_file(self, filehandle):

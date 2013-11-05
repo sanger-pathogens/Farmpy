@@ -4,7 +4,7 @@ import sys
 class Error (Exception): pass
 
 
-def lsf_out_to_tsv(infiles, outfile, show_all=False, compress_job_name=10, compress_filename=None):
+def lsf_out_to_tsv(infiles, outfile, show_all=False, compress_job_name=10, compress_filename=None, time_in_hours=False):
     '''Given a list of files out bsub output, makes a tsv file of their stats'''
     if outfile == '-':
         fout = sys.stdout
@@ -30,7 +30,7 @@ def lsf_out_to_tsv(infiles, outfile, show_all=False, compress_job_name=10, compr
                 filename = '*' + infile[-compress_filename:]
             else:
                 filename = infile
-            print(attempt_number, stats.to_tsv(job_name_limit=compress_job_name, show_all=show_all), filename, sep='\t', file=fout)
+            print(attempt_number, stats.to_tsv(job_name_limit=compress_job_name, show_all=show_all, time_in_hours=time_in_hours), filename, sep='\t', file=fout)
             attempt_number += 1
 
     if outfile != '-':

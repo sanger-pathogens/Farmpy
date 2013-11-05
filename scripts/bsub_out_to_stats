@@ -7,6 +7,7 @@ parser = argparse.ArgumentParser(
     description = 'Reports stats such as memory/cpu usage etc from the output of an LSF bsub job',
     usage = '%(prog)s <list of bsub output files>')
 
+parser.add_argument('--time_units', choices=['hours', 'seconds'], help='Units to use for time [%(default)s]', default='hours')
 parser.add_argument('--outfile', '-o', help='Name of output file. Default is stdout', default='-')
 parser.add_argument('-l', '--longer', action='count', help='Print longer output with more columns. This can be given twice for even more output', default=0)
 parser.add_argument('infiles', nargs='+', help='list of bsub output files')
@@ -30,5 +31,6 @@ tasks.lsf_out_to_tsv(
     options.outfile,
     show_all=show_all,
     compress_job_name=compress_job_name,
-    compress_filename=compress_filename
+    compress_filename=compress_filename,
+    time_in_hours=(options.time_units == 'hours')
 )
