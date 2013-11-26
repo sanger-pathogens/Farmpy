@@ -42,6 +42,17 @@ class TestJob(unittest.TestCase):
         bsub._set_memory_units()
         self.assertEqual('MB', bsub.memory_units)
 
+    def test_make_checkpoint_string(self):
+        '''Test make_checkpoint_string'''
+        bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')
+        self.assertEqual('', bsub._make_checkpoint_string())
+
+        bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd', checkpoint=True)
+        self.assertEqual('-k "' + os.path.abspath('out.checkpoint') + ' method=blcr 600"', bsub._make_checkpoint_string())
+
+        bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd', checkpoint=True, checkpoint_dir='foo', checkpoint_period=42)
+        self.assertEqual('-k "' + os.path.abspath('foo') + ' method=blcr 42"', bsub._make_checkpoint_string())
+
     def test_make_resources_string(self):
         '''Check resources in bsub call get set correctly'''
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1.5, 'cmd', no_resources=True)
@@ -97,6 +108,8 @@ class TestJob(unittest.TestCase):
         '''Check that command to be bsubbed is made correctly - including for job array'''
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')
         self.assertEqual('cmd', bsub._make_command_string())
+        bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd', checkpoint=True)
+        self.assertEqual('cr_run cmd', bsub._make_command_string())
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd.INDEX')
         self.assertEqual('cmd.INDEX', bsub._make_command_string())
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd.INDEX foo bar.INDEX', array_start=1, array_end=42)

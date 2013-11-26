@@ -60,6 +60,9 @@ class Job:
                  tmp_space=0,
                  memory_units=None,
                  no_resources=False,
+                 checkpoint=False,
+                 checkpoint_dir=None,
+                 checkpoint_period=600,
                  max_array_size=100):
         '''Creates Job object. See main module help for a description and example usage'''
 
@@ -81,6 +84,10 @@ class Job:
         self.max_array_size = max_array_size
         self.job_id = None
         self.no_resources=no_resources
+        self.checkpoint = checkpoint
+        self.checkpoint_dir = checkpoint_dir
+        self.checkpoint_period = checkpoint_period
+       
 
         # these are used for unittests to call test scripts instead of the
         # real commands you would run on a farm
@@ -142,6 +149,14 @@ class Job:
             else:
                 self.run_when_done.append(x)
 
+    def _make_checkpoint_string(self):
+        if self.checkpoint:
+            if self.checkpoint_dir is None:
+                self.checkpoint_dir = self.stdout_file + '.checkpoint'
+
+            return '-k "' + os.path.abspath(self.checkpoint_dir) + ' method=blcr ' + str(self.checkpoint_period) + '"'
+        else:
+            return ''
 
     def _make_prexec_test_string(self):
         # a reasonable sanity check is that the home directory of the user
@@ -230,15 +245,21 @@ class Job:
 
 
     def _make_command_string(self):
+        command = ''
+
+        if self.checkpoint:
+            command = 'cr_run '
+
         if self.array_start > 0:
-            return self.command.replace('INDEX', '\$LSB_JOBINDEX')
+            return command + self.command.replace('INDEX', '\$LSB_JOBINDEX')
         else:
-            return self.command
+            return command + self.command
 
 
     def __str__(self):
         return ' '.join([x for x in [
                             'bsub',
+                            self._make_checkpoint_string(),
                             self._make_queue_string(),
                             self._make_prexec_test_string(),
                             self._make_resources_string(),
