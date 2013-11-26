@@ -14,6 +14,9 @@ parser.add_argument('command', help='Command to be bsubbed', nargs=argparse.REMA
 
 parser.add_argument('-e', '--err', help='Name of file that stderr gets written to [job_name.e]', metavar='filename', default=None)
 parser.add_argument('-o', '--out', help='Name of file that stdout gets written to [job_name.o]', metavar='filename', default=None)
+parser.add_argument('-c', '--checkpoint', action='store_true', help='Use checkpointing')
+parser.add_argument('-d', '--checkpoint_dir', help='Specify directory in which to put the checkpoint files. Default is to use stdout_file.checkpoint', metavar='/path/to/directory')
+parser.add_argument('-p', '--checkpoint_period', help='Time interval between checkpoints in minutes [%(default)s]', default=600, metavar='time_in_minutes')
 parser.add_argument('--start', type=int, help='Starting index of job array', metavar='int', default=0)
 parser.add_argument('--end', type=int, help='Ending index of job array', metavar='int', default=0)
 parser.add_argument('--done', action='append', help='Only start the job running when the given job finishes successfully. All digits is interpreted as a job ID, otherwise a job name. This can be used more than once to make the job depend on two or more other jobs', metavar='Job ID/job name')
@@ -42,6 +45,9 @@ b = lsf.Job(options.out,
             options.queue,
             options.memory,
             command,
+            checkpoint=options.checkpoint,
+            checkpoint_dir=options.checkpoint_dir,
+            checkpoint_period=options.checkpoint_period,
             array_start=options.start,
             array_end=options.end,
             depend=options.done,
