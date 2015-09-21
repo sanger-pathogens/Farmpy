@@ -63,6 +63,8 @@ class Job:
                  checkpoint=False,
                  checkpoint_dir=None,
                  checkpoint_period=600,
+                 tokens_name=None,
+                 tokens_number=100,
                  max_array_size=100):
         '''Creates Job object. See main module help for a description and example usage'''
 
@@ -87,6 +89,8 @@ class Job:
         self.checkpoint = checkpoint
         self.checkpoint_dir = checkpoint_dir
         self.checkpoint_period = checkpoint_period
+        self.tokens_name = tokens_name
+        self.tokens_number = tokens_number
        
 
         # these are used for unittests to call test scripts instead of the
@@ -211,6 +215,9 @@ class Job:
 
         if self.tmp_space:
             s += ',tmp=' + str(self.tmp_space)
+
+        if self.tokens_name:
+            s += ',' + self.tokens_name + '=' + str(self.tokens_number)
 
         s += ']" -M' + str(self.memory)
 

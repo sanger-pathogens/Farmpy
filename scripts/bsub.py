@@ -24,6 +24,8 @@ parser.add_argument('--ended', action='append', help='As for --done, except the 
 parser.add_argument('--memory_units', help='Set to MB or KB as appropriate (this is a hack to be used when it is not detected automatically)', metavar='MB or KB', default=None)
 parser.add_argument('--tmp_space', type=float, help='Reserve this much /tmp space in GB [%(default)s]', default=0, metavar='float')
 parser.add_argument('--threads', type=int, help='Number of threads to request [%(default)s]', metavar='int', default=1)
+parser.add_argument('--tokens_name', help='Name of resource tokens', metavar='string')
+parser.add_argument('--tokens_number', type=int, help='Value of resource tokens (only used if --tokens_name is used) [%(default)s]', metavar='INT', default=100)
 parser.add_argument('-q', '--queue', help='Queue in which to run job [%(default)s]', default='normal', metavar='queue_name')
 parser.add_argument('--norun', action='store_true', help='Don\'t run, just print the bsub command')
 
@@ -54,6 +56,8 @@ b = lsf.Job(options.out,
             threads=options.threads,
             tmp_space=options.tmp_space,
             ended=options.ended,
+            tokens_name=options.tokens_name,
+            tokens_number=options.tokens_number,
             memory_units=options.memory_units)
 
 print(b)
