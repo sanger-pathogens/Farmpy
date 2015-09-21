@@ -64,7 +64,12 @@ class TestJob(unittest.TestCase):
         resources = bsub._make_resources_string()
         self.assertEqual('-R "select[mem>1500] rusage[mem=1500]" -M1500', resources)
 
+        bsub = lsf.Job('out', 'error', 'name', 'queue', 1.5, 'cmd', tokens_name='mytokens', tokens_number=42)
+        bsub.memory_units='MB'
+        resources = bsub._make_resources_string()
+        self.assertEqual('-R "select[mem>1500] rusage[mem=1500,mytokens=42]" -M1500', resources)
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1.5, 'cmd', threads=42)
+
         bsub.memory_units='KB'
         resources = bsub._make_resources_string()
         self.assertEqual('-n 42 -R "span[hosts=1] select[mem>1500] rusage[mem=1500]" -M1500000', resources)
