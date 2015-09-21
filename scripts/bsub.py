@@ -28,6 +28,7 @@ parser.add_argument('--tokens_name', help='Name of resource tokens', metavar='st
 parser.add_argument('--tokens_number', type=int, help='Value of resource tokens (only used if --tokens_name is used) [%(default)s]', metavar='INT', default=100)
 parser.add_argument('-q', '--queue', help='Queue in which to run job [%(default)s]', default='normal', metavar='queue_name')
 parser.add_argument('--norun', action='store_true', help='Don\'t run, just print the bsub command')
+parser.add_argument('--version', action='version', version='0.3')
 
 options = parser.parse_args()
 
