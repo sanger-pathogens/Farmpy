@@ -4,7 +4,7 @@ from datetime import datetime, date, time, timedelta
 
 class Error (Exception): pass
 
-date_time_match_string = 'at\s+[a-zA-Z]+\s+([a-zA-Z]+)\s+([0-9]+)\s+([0-9]{2}):([0-9]{2}):([0-9]{2})\s+([0-9]{4})$'
+date_time_match_string = '(at|on)\s+[a-zA-Z]+\s+([a-zA-Z]+)\s+([0-9]+)\s+([0-9]{2}):([0-9]{2}):([0-9]{2})\s+([0-9]{4})$'
 
 regexes = {
     'job_name': re.compile('^Job <(.*)> was submitted from host <(.*)> by user <(.*)> in cluster <.*>.$'),
@@ -34,7 +34,7 @@ def file_reader(fname):
         yield stats
 
     f.close()
- 
+
 
 all_stats = [
     'exit_code',
@@ -84,7 +84,7 @@ class Stats:
             original_wall_clock = self.wall_clock_time
             self.cpu_time = None if (self.cpu_time is None) else round(self.cpu_time / (60*60), 2)
             self.wall_clock_time = None if (self.wall_clock_time is None) else round(self.wall_clock_time / (60*60), 2)
-            
+
 
         if show_all:
             for x in all_stats:
@@ -95,7 +95,7 @@ class Stats:
             for x in short_stats:
                 l.append(eval('self.' + x))
 
-         
+
         for i in range(len(l)):
             if l[i] is None:
                 l[i] = '*'
@@ -132,7 +132,7 @@ class Stats:
             self.working_dir = hits.group(1)
         except:
             pass
- 
+
 
     def _parse_exit_code_line(self, line):
         hits = regexes['exit_code'].search(line)
@@ -145,7 +145,7 @@ class Stats:
             self.exit_code = int(hits.group(2))
         else:
             pass
-               
+
 
     def _parse_cpu_time_line(self, line):
         hits = regexes['cpu_time'].search(line)
@@ -192,15 +192,15 @@ class Stats:
         hits = regex.search(line)
 
         try:
-            month = hits.group(1)
-            day = int(hits.group(2))
-            hrs = int(hits.group(3))
-            mins = int(hits.group(4))
-            secs = int(hits.group(5))
-            year = int(hits.group(6))
+            month = hits.group(2)
+            day = int(hits.group(3))
+            hrs = int(hits.group(4))
+            mins = int(hits.group(5))
+            secs = int(hits.group(6))
+            year = int(hits.group(7))
         except:
             return None
-        
+
         months = {
             'Jan': 1,
             'Feb': 2,

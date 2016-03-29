@@ -7,7 +7,7 @@ def read(fname):
 
 setup(
     name='farmpy',
-    version='0.3',
+    version='0.3.1',
     description='Package to run farm jobs - currently LSF supported',
     long_description=read('README.md'),
     author='Martin Hunt',

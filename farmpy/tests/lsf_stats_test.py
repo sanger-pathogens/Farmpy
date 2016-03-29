@@ -49,7 +49,7 @@ class TestLsfStats(unittest.TestCase):
             stats.max_memory,
             stats.requested_memory,
         ]
-        
+
         self.assertEqual('\t'.join([str(x) for x in expected]), stats.to_tsv(show_all=False))
 
         expected = [
@@ -59,9 +59,9 @@ class TestLsfStats(unittest.TestCase):
             stats.max_memory,
             stats.requested_memory,
         ]
-        
+
         self.assertEqual('\t'.join([str(x) for x in expected]), stats.to_tsv(show_all=False, time_in_hours=True))
-        
+
 
 
     def test_tsv_header(self):
@@ -83,8 +83,8 @@ class TestLsfStats(unittest.TestCase):
         ])
 
         self.assertEqual(expected, lsf_stats.tsv_header)
-        
-            
+
+
 class TestLineParsing(unittest.TestCase):
     def test_parse_job_name_line(self):
         '''Test name of job and username correctly extracted from bsub output'''
@@ -93,7 +93,7 @@ class TestLineParsing(unittest.TestCase):
         stats._parse_job_name_line(line)
         self.assertEqual('name_of_job', stats.job_name)
         self.assertEqual('username', stats.username)
- 
+
         stats = lsf_stats.Stats()
         stats._parse_job_name_line('x')
         self.assertEqual(None, stats.job_name)
@@ -105,7 +105,7 @@ class TestLineParsing(unittest.TestCase):
         line = 'Job was executed on host(s) <exec_host>, in queue <normal>, as user <username> in cluster <farm3>.'
         stats._parse_exec_host_line(line)
         self.assertEqual('exec_host', stats.exec_host)
- 
+
         stats = lsf_stats.Stats()
         stats._parse_exec_host_line('x')
         self.assertEqual(None, stats.exec_host)
@@ -116,7 +116,7 @@ class TestLineParsing(unittest.TestCase):
         line = '</the/working/dir> was used as the working directory.'
         stats._parse_working_dir_line(line)
         self.assertEqual('/the/working/dir', stats.working_dir)
- 
+
         stats = lsf_stats.Stats()
         stats._parse_working_dir_line('x')
         self.assertEqual(None, stats.working_dir)
@@ -129,7 +129,7 @@ class TestLineParsing(unittest.TestCase):
             'Exited with exit code 42.',
             'x'
         ]
-        
+
         exit_codes = [0, 42, None]
 
         for i in range(len(lines)):
@@ -146,29 +146,29 @@ class TestLineParsing(unittest.TestCase):
         line = '    CPU time :               10464.48 sec.'
         stats._parse_cpu_time_line(line)
         self.assertEqual(10464.48, stats.cpu_time)
-        
+
         stats = lsf_stats.Stats()
         stats._parse_cpu_time_line('x')
         self.assertEqual(None, stats.cpu_time)
-        
+
 
     def test_parse_max_memory_line(self):
         stats = lsf_stats.Stats()
         line = '    Max Memory :             1174 MB'
         stats._parse_max_memory_line(line)
         self.assertEqual(1.174, stats.max_memory)
-        
+
         stats = lsf_stats.Stats()
         stats._parse_max_memory_line('x')
         self.assertEqual(None, stats.max_memory)
-        
-    
+
+
     def test_parse_requested_memory_line(self):
         stats = lsf_stats.Stats()
         line = '    Total Requested Memory : 2000.00 MB'
         stats._parse_requested_memory_line(line)
         self.assertEqual(2, stats.requested_memory)
-        
+
         stats = lsf_stats.Stats()
         stats._parse_requested_memory_line('x')
         self.assertEqual(None, stats.requested_memory)
@@ -216,11 +216,21 @@ class TestLineParsing(unittest.TestCase):
         expected_datetime = datetime.combine(expected_date, expected_time)
         stats._parse_start_time_line(line)
         self.assertEqual(expected_datetime, stats.start_time)
-        
 
-    def test_parse_end_time_line(self):
+
+    def test_parse_end_time_line_reported_at(self):
         stats = lsf_stats.Stats()
         line = 'Results reported at Mon Sep 16 13:11:06 2013'
+        expected_date = date(2013, 9, 16)
+        expected_time = time(13, 11, 6)
+        expected_datetime = datetime.combine(expected_date, expected_time)
+        stats._parse_end_time_line(line)
+        self.assertEqual(expected_datetime, stats.end_time)
+
+
+    def test_parse_end_time_line_reported_on(self):
+        stats = lsf_stats.Stats()
+        line = 'Results reported on Mon Sep 16 13:11:06 2013'
         expected_date = date(2013, 9, 16)
         expected_time = time(13, 11, 6)
         expected_datetime = datetime.combine(expected_date, expected_time)
@@ -261,7 +271,7 @@ class TestFileReader(unittest.TestCase):
 
         reader = lsf_stats.file_reader(os.path.join(data_dir, 'lsf_unittest_outfile'))
         i = 0
-        
+
         for stats in reader:
             self.assertEqual(expected_stats[i], stats)
             i += 1
@@ -269,7 +279,7 @@ class TestFileReader(unittest.TestCase):
         with self.assertRaises(lsf_stats.Error):
             reader = lsf_stats.file_reader('notafilesothrowanerror')
             next(reader)
-         
+
 
 
 if __name__ == '__main__':
