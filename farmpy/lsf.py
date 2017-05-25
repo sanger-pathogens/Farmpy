@@ -91,7 +91,7 @@ class Job:
         self.checkpoint_period = checkpoint_period
         self.tokens_name = tokens_name
         self.tokens_number = tokens_number
-       
+
 
         # these are used for unittests to call test scripts instead of the
         # real commands you would run on a farm
@@ -120,14 +120,14 @@ class Job:
             retcode = subprocess.call(cmd, shell=True)
             if retcode != 0:
                 raise Error('Error running command:\n' + str(self))
-            
+
         if self.array_start > 0:
             for i in range(self.array_start, self.array_end + 1):
                 os.environ['LSB_JOBINDEX'] = str(i)
                 run_command(self._make_command_string().replace('\$LSB_JOBINDEX', '$LSB_JOBINDEX'))
         else:
             run_command(self._make_command_string())
-        
+
 
     def add_dependency(self, deps, ended=False):
         '''Makes the job depend on another job or jobs.
@@ -169,7 +169,7 @@ class Job:
 
 
     def _make_queue_string(self):
-        return '-q ' + self.queue
+        return '' if self.queue is None else '-q ' + self.queue
 
 
     def _set_memory_units(self):
@@ -189,10 +189,10 @@ class Job:
                 break
         else:
             self.memory_units = 'KB'
- 
+
         if self.memory_units not in ['KB', 'MB']:
             raise Error('Error getting lsf memory units. Expected KB or MB')
-            
+
 
     def _make_resources_string(self):
         if self.no_resources:
@@ -232,7 +232,7 @@ class Job:
             return '-o ' + self.stdout_file + '.%I -e ' + self.stderr_file + '.%I'
         else:
             return '-o ' + self.stdout_file + ' -e ' + self.stderr_file
-            
+
 
     def _make_job_name_string(self):
         if self.array_start > 0:

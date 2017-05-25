@@ -18,7 +18,7 @@ class TestJob(unittest.TestCase):
     def test_set_memory_units(self):
         '''Check that we can get memory units or die gracefully'''
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')
-        
+
         with self.assertRaises(lsf.Error):
             bsub._lsadmin_cmd = 'this_is_not_a_command_and_should_cause_error'
             bsub._set_memory_units()
@@ -83,6 +83,8 @@ class TestJob(unittest.TestCase):
         '''Check that queue set correctly'''
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')
         self.assertEqual('-q queue', bsub._make_queue_string())
+        bsub = lsf.Job('out', 'error', 'name', None, 1, 'cmd')
+        self.assertEqual('', bsub._make_queue_string())
 
     def test_make_output_files_string(self):
         '''Check that the names of the stdout and stderr files set properly'''
@@ -90,7 +92,7 @@ class TestJob(unittest.TestCase):
         self.assertEqual('-o out -e error', bsub._make_output_files_string())
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd', array_start=1, array_end=42)
         self.assertEqual('-o out.%I -e error.%I', bsub._make_output_files_string())
-        
+
     def test_make_job_name_string(self):
         '''Check that the name of the job is set correctly'''
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')
@@ -129,7 +131,7 @@ class TestJob(unittest.TestCase):
         bsub.add_dependency(42)
         dependencies.append('42')
         self.assertListEqual(bsub.run_when_done, dependencies)
-     
+
         bsub.add_dependency('43')
         dependencies.append('43')
         self.assertListEqual(bsub.run_when_done, dependencies)
@@ -148,7 +150,7 @@ class TestJob(unittest.TestCase):
         bsub.add_dependency(42, ended=True)
         dependencies.append('42')
         self.assertListEqual(bsub.run_when_ended, dependencies)
-     
+
         bsub.add_dependency('43', ended=True)
         dependencies.append('43')
         self.assertListEqual(bsub.run_when_ended, dependencies)
@@ -183,7 +185,7 @@ class TestJob(unittest.TestCase):
         bsub_out = 'Job <not_an_int> is submitted to queue <normal>\n'
         with self.assertRaises(lsf.Error):
             bsub._set_job_id_from_bsub_output(bsub_out)
-         
+
     def test_run(self):
         '''Test run() runs/fails as expected'''
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')

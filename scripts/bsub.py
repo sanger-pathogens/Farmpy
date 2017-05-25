@@ -26,7 +26,7 @@ parser.add_argument('--tmp_space', type=float, help='Reserve this much /tmp spac
 parser.add_argument('--threads', type=int, help='Number of threads to request [%(default)s]', metavar='int', default=1)
 parser.add_argument('--tokens_name', help='Name of resource tokens', metavar='string')
 parser.add_argument('--tokens_number', type=int, help='Value of resource tokens (only used if --tokens_name is used) [%(default)s]', metavar='INT', default=100)
-parser.add_argument('-q', '--queue', help='Queue in which to run job [%(default)s]', default='normal', metavar='queue_name')
+parser.add_argument('-q', '--queue', help='Queue in which to run job. If not used, uses the default queue as determined by your LSF setup', metavar='queue_name')
 parser.add_argument('--norun', action='store_true', help='Don\'t run, just print the bsub command')
 parser.add_argument('--version', action='version', version=common.version)
 
