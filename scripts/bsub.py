@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-from farmpy import lsf, common
+from farmpy import lsf, __version__
 
 parser = argparse.ArgumentParser(
     description = 'Wrapper script for running jobs using LSF',
@@ -17,6 +17,7 @@ parser.add_argument('-o', '--out', help='Name of file that stdout gets written t
 parser.add_argument('-c', '--checkpoint', action='store_true', help='Use checkpointing')
 parser.add_argument('-d', '--checkpoint_dir', help='Specify directory in which to put the checkpoint files. Default is to use stdout_file.checkpoint', metavar='/path/to/directory')
 parser.add_argument('-p', '--checkpoint_period', help='Time interval between checkpoints in minutes [%(default)s]', default=600, metavar='time_in_minutes')
+parser.add_argument('--array_limit', type=int, help='Limit job array to this many jobs running at once [%(default)s]', default=100, metavar='INT')
 parser.add_argument('--start', type=int, help='Starting index of job array', metavar='int', default=0)
 parser.add_argument('--end', type=int, help='Ending index of job array', metavar='int', default=0)
 parser.add_argument('--done', action='append', help='Only start the job running when the given job finishes successfully. All digits is interpreted as a job ID, otherwise a job name. This can be used more than once to make the job depend on two or more other jobs', metavar='Job ID/job name')
@@ -28,7 +29,7 @@ parser.add_argument('--tokens_name', help='Name of resource tokens', metavar='st
 parser.add_argument('--tokens_number', type=int, help='Value of resource tokens (only used if --tokens_name is used) [%(default)s]', metavar='INT', default=100)
 parser.add_argument('-q', '--queue', help='Queue in which to run job. If not used, uses the default queue as determined by your LSF setup', metavar='queue_name')
 parser.add_argument('--norun', action='store_true', help='Don\'t run, just print the bsub command')
-parser.add_argument('--version', action='version', version=common.version)
+parser.add_argument('--version', action='version', version=__version__)
 
 options = parser.parse_args()
 
@@ -59,7 +60,8 @@ b = lsf.Job(options.out,
             ended=options.ended,
             tokens_name=options.tokens_name,
             tokens_number=options.tokens_number,
-            memory_units=options.memory_units)
+            memory_units=options.memory_units,
+            max_array_size=options.array_limit)
 
 print(b)
 

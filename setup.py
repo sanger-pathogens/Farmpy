@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='farmpy',
-    version='0.4.0',
+    version='0.41.0',
     description='Package to run farm jobs - currently LSF supported',
     author='Martin Hunt',
     author_email='mh12@sanger.ac.uk',
