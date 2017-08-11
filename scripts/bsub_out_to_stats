@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-from farmpy import common, tasks
+from farmpy import tasks, __version__
 
 parser = argparse.ArgumentParser(
     description = 'Reports stats such as memory/cpu usage etc from the output of an LSF bsub job',
@@ -11,7 +11,7 @@ parser.add_argument('--time_units', choices=['hours', 'seconds'], help='Units to
 parser.add_argument('--outfile', '-o', help='Name of output file. Default is stdout', default='-')
 parser.add_argument('-l', '--longer', action='count', help='Print longer output with more columns. This can be given twice for even more output', default=0)
 parser.add_argument('infiles', nargs='+', help='list of bsub output files')
-parser.add_argument('--version', action='version', version=common.version)
+parser.add_argument('--version', action='version', version=__version__)
 options = parser.parse_args()
 
 if options.longer == 0:

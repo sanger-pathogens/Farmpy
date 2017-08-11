@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-from farmpy import lsf, common
+from farmpy import lsf, __version__
 
 parser = argparse.ArgumentParser(
     description = 'Wrapper script for running jobs using LSF',
@@ -29,7 +29,7 @@ parser.add_argument('--tokens_name', help='Name of resource tokens', metavar='st
 parser.add_argument('--tokens_number', type=int, help='Value of resource tokens (only used if --tokens_name is used) [%(default)s]', metavar='INT', default=100)
 parser.add_argument('-q', '--queue', help='Queue in which to run job. If not used, uses the default queue as determined by your LSF setup', metavar='queue_name')
 parser.add_argument('--norun', action='store_true', help='Don\'t run, just print the bsub command')
-parser.add_argument('--version', action='version', version=common.version)
+parser.add_argument('--version', action='version', version=__version__)
 
 options = parser.parse_args()
 
