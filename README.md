@@ -98,3 +98,5 @@ This sets up a job array with 10 elements. stdout files will be called out.1, ou
     ...
     run.sh 10
 
+
+Build status: [![Build Status](https://travis-ci.org/sanger-pathogens/Farmpy.svg?branch=master)](https://travis-ci.org/sanger-pathogens/Farmpy)
