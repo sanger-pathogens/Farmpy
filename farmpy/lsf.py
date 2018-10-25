@@ -41,6 +41,11 @@ When calling Job(...), these are options that can be given:
   nax_array_size=N - limit number of jobs running at the same time in an array to N (default 100)
   memory_units=KB or MB - the units used in the -M option. It should be detected automatically, but you can override using this option (but might cause run() to fail)
 
+A note on memory units:
+The memory may need to be specified in KB or MB.
+The units are determined by running `lsadmin showconf lim`.
+However, in case that doesn't work (or you want to avoid running it), you
+can set the environment variable FARMPY_LSF_MEMORY_UNITS to MB or KB.
 """
 
 import socket
@@ -175,20 +180,22 @@ class Job:
     def _set_memory_units(self):
         if self.memory_units is not None:
             return self.memory_units
-
-        try:
-            output = subprocess.check_output(self._lsadmin_cmd, shell=True).decode('utf-8').rstrip().split('\n')
-        except:
-            raise Error("Error getting lsf memory units using: lsadmin showconf lim " + socket.gethostname())
-
-        # get the line with LSF_UNIT_FOR_LIMITS in it, if it exists
-        for line in output:
-            data = line.strip().split()
-            if data[0] == 'LSF_UNIT_FOR_LIMITS':
-                self.memory_units = data[2]
-                break
+        elif 'FARMPY_LSF_MEMORY_UNITS' in os.environ:
+            self.memory_units = os.environ['FARMPY_LSF_MEMORY_UNITS']
         else:
-            self.memory_units = 'KB'
+            try:
+                output = subprocess.check_output(self._lsadmin_cmd, shell=True).decode('utf-8').rstrip().split('\n')
+            except:
+                raise Error("Error getting LSF memory units using: lsadmin showconf lim " + socket.gethostname() + '\n... you can work around this by setting the environment variable FARMPY_LSF_MEMORY_UNITS to KB or MB, as appropriate for your LSF setup.')
+
+            # get the line with LSF_UNIT_FOR_LIMITS in it, if it exists
+            for line in output:
+                data = line.strip().split()
+                if data[0] == 'LSF_UNIT_FOR_LIMITS':
+                    self.memory_units = data[2]
+                    break
+            else:
+                self.memory_units = 'KB'
 
         if self.memory_units not in ['KB', 'MB']:
             raise Error('Error getting lsf memory units. Expected KB or MB')
