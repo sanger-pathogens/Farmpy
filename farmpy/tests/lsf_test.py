@@ -32,6 +32,13 @@ class TestJob(unittest.TestCase):
         bsub._set_memory_units()
         self.assertEqual('KB', bsub.memory_units)
 
+        os.environ['FARMPY_LSF_MEMORY_UNITS'] = 'MB'
+        bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')
+        bsub._lsadmin_cmd = 'cat ' + os.path.join(test_dir, 'lsf_unittest_lsadmin_showconf_kb.txt')
+        bsub._set_memory_units()
+        self.assertEqual('MB', bsub.memory_units)
+        del os.environ['FARMPY_LSF_MEMORY_UNITS']
+
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')
         bsub._lsadmin_cmd = 'cat ' + os.path.join(test_dir, 'lsf_unittest_lsadmin_showconf_kb.txt')
         bsub._set_memory_units()
