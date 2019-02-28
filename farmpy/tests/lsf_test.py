@@ -99,6 +99,12 @@ class TestJob(unittest.TestCase):
         self.assertEqual('-o out -e error', bsub._make_output_files_string())
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd', array_start=1, array_end=42)
         self.assertEqual('-o out.%I -e error.%I', bsub._make_output_files_string())
+        bsub = lsf.Job('doesntexist/out', 'error', 'name', 'queue', 1, 'cmd')
+        with self.assertRaises(lsf.DirectoryDoesNotExist):
+            bsub._make_output_files_string()
+        bsub = lsf.Job('out', 'doesntexist/error', 'name', 'queue', 1, 'cmd')
+        with self.assertRaises(lsf.DirectoryDoesNotExist):
+            bsub._make_output_files_string()
 
     def test_make_job_name_string(self):
         '''Check that the name of the job is set correctly'''
@@ -128,6 +134,9 @@ class TestJob(unittest.TestCase):
         self.assertEqual('cmd.INDEX', bsub._make_command_string())
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd.INDEX foo bar.INDEX', array_start=1, array_end=42)
         self.assertEqual('cmd.\$LSB_JOBINDEX foo bar.\$LSB_JOBINDEX', bsub._make_command_string())
+        bsub = lsf.Job('out', 'error', 'name', 'queue', 1, '')
+        with self.assertRaises(lsf.NoCommandGiven):
+            bsub._make_command_string()
 
     def test_add_dependency(self):
         bsub = lsf.Job('out', 'error', 'name', 'queue', 1, 'cmd')
