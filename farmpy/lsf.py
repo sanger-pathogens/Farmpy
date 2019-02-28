@@ -52,9 +52,21 @@ import socket
 import subprocess
 import getpass
 import os
+from pathlib import Path
 
 
 class Error (Exception): pass
+
+
+class NoCommandGiven(Exception):
+    """Raised when no command is passed."""
+    pass
+
+
+class DirectoryDoesNotExist(Exception):
+    """Raised when log directory doesn't exist."""
+    pass
+
 
 class Job:
     def __init__(self, out, error, name, queue, mem, cmd,
@@ -235,6 +247,21 @@ class Job:
 
 
     def _make_output_files_string(self):
+        log_out_dir = Path(self.stdout_file).parent
+        log_err_dir = Path(self.stderr_file).parent
+
+        # make sure the log directories exist
+        if not log_out_dir.exists():
+            raise DirectoryDoesNotExist(
+                "Directory for stdout log does not exist: {}".format(
+                    str(log_out_dir.absolute()))
+            )
+        elif not log_err_dir.exists():
+            raise DirectoryDoesNotExist(
+                "Directory for stderr log does not exist: {}".format(
+                    str(log_err_dir.absolute()))
+            )
+
         if self.array_start > 0:
             return '-o ' + self.stdout_file + '.%I -e ' + self.stderr_file + '.%I'
         else:
@@ -259,6 +286,9 @@ class Job:
 
 
     def _make_command_string(self):
+        if not self.command:
+            raise NoCommandGiven("No command given to run.")
+
         command = ''
 
         if self.checkpoint:
